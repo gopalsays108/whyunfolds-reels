@@ -1,0 +1,42 @@
+name: Post Instagram Reels
+on:
+  schedule:
+    - cron: "*/10 * * * *"
+  workflow_dispatch:
+    inputs:
+      check:
+        description: "Dry run: process this reel number without publishing it (leave empty to post what is due)"
+        required: false
+        default: ""
+permissions:
+  contents: write
+concurrency:
+  group: reels
+  cancel-in-progress: false
+jobs:
+  post:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Post what is due
+        env:
+          IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
+          IG_USER_ID: ${{ vars.IG_USER_ID }}
+          MEDIA_BASE: ${{ vars.MEDIA_BASE }}
+          CHECK: ${{ github.event.inputs.check }}
+        run: python post.py
+      - name: Save the queue
+        if: always()
+        run: |
+          if ! git diff --quiet queue.json; then
+            git config user.name "klypto-reels"
+            git config user.email "klypto-reels@users.noreply.github.com"
+            git commit -am "Reels posted $(date -u +%FT%TZ)"
+            git push
+          fi
