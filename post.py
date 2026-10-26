@@ -78,7 +78,8 @@ def main() -> int:
     base, user = os.environ["MEDIA_BASE"].rstrip("/"), os.environ["IG_USER_ID"]
     queue = json.loads(QUEUE.read_text())
     if os.environ.get("CHECK"):
-        reel = next(r for r in queue if r["number"] == os.environ["CHECK"].zfill(2))
+        want = os.environ["CHECK"]
+        reel = next(r for r in queue if r.get("id") == want or r["number"] == want.zfill(2))
         print("dry run (not published):", reel["title"], post(reel, base, user, publish=False))
         return 0
     now, failed = datetime.now(UTC), False
