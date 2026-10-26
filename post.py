@@ -16,7 +16,7 @@ from datetime import UTC, datetime, timedelta
 from pathlib import Path
 
 GRAPH = "https://graph.instagram.com/v23.0"
-LATE = timedelta(hours=3)  # GitHub's clock can lag; later than this, a reel waits for the owner instead
+LATE = timedelta(hours=6)  # GitHub's clock can lag; later than this, a reel waits for the owner instead
 ATTEMPTS = 3
 QUEUE = Path(__file__).with_name("queue.json")
 TOKEN = os.environ.get("IG_ACCESS_TOKEN", "")
