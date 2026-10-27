@@ -1,7 +1,7 @@
 name: Post Instagram Reels
 on:
   schedule:
-    - cron: "3,13,23,33,43,53 * * * *"
+    - cron: "3,13,23,33,43,53 * * * *"  # off the top of the hour, when GitHub delays most
   workflow_dispatch:
     inputs:
       check:
